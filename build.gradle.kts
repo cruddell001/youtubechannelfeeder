@@ -53,6 +53,7 @@ dependencies {
 
     // database
     implementation("mysql:mysql-connector-java:8.0.30")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     // html templating
     implementation("io.ktor:ktor-server-freemarker:$ktor_version")
@@ -76,6 +77,9 @@ fun generateBuildConfigFile() {
     if (!pathCreated) return
     val buildConfigFile = File(generatedDir, "BuildConfig.kt")
     val youtubeKey = properties.getProperty("youtubeApiKey")
+    val databaseName = properties.getProperty("databaseName")
+    val databaseUser = properties.getProperty("databaseUser")
+    val databasePassword = properties.getProperty("databasePassword")
     println("Generating BuildConfig file with youtubeApiKey: $youtubeKey")
     buildConfigFile.writeText(
         """
@@ -83,6 +87,9 @@ fun generateBuildConfigFile() {
             
             object BuildConfig {
                 const val YOUTUBE_API_KEY: String = "$youtubeKey"
+                const val DATABASE_NAME: String = "$databaseName"
+                const val DATABASE_USER: String = "$databaseUser"
+                const val DATABASE_PASSWORD: String = "$databasePassword"
             }
             """.trimIndent()
     )

@@ -2,6 +2,7 @@ package com.ruddell.plugins
 
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.models.YoutubeItem
+import com.ruddell.repository.DataRepository
 import com.ruddell.repository.YoutubeApi
 import io.ktor.server.application.*
 import io.ktor.server.freemarker.*
@@ -25,7 +26,7 @@ fun Application.configureRouting() {
             if (query == null) {
                 call.respondText("[]")
             } else {
-                val res = YoutubeApi.searchChannels(query)
+                val res = DataRepository.performSearch(query)
                 call.respond(res)
             }
         }
