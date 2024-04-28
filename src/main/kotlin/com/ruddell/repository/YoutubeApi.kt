@@ -3,53 +3,65 @@ package com.ruddell.repository
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.json.JsonFactory
+import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.model.SearchListResponse
+import com.google.gson.Gson
 import com.ruddell.BuildConfig
+import com.ruddell.extensions.toChannel
 import com.ruddell.extensions.toItem
+import com.ruddell.models.YoutubeChannel
 import com.ruddell.models.YoutubeItem
 import java.io.IOException
 import java.security.GeneralSecurityException
 
 
-class YoutubeApi {
+object YoutubeApi {
     private var service: YouTube? = null
 
     init {
         service = getService()
     }
 
-    companion object {
-        private const val API_KEY = BuildConfig.YOUTUBE_API_KEY
-        private val SCOPES: Collection<String> = listOf("https://www.googleapis.com/auth/youtube.readonly")
+    private const val API_KEY = BuildConfig.YOUTUBE_API_KEY
+    private val SCOPES: Collection<String> = listOf("https://www.googleapis.com/auth/youtube.readonly")
 
-        private const val APPLICATION_NAME = "API code samples"
-        private val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance()
-    }
+    private const val APPLICATION_NAME = "API code samples"
+    private val JSON_FACTORY: JsonFactory get() = GsonFactory.getDefaultInstance()
 
-    fun search(query: String): List<YoutubeItem> {
-        val request = service?.search()?.list("snippet")
-        val response: SearchListResponse? = request
+    fun searchChannels(query: String): List<YoutubeChannel> {
+        val service: YouTube = getService() ?: return emptyList()
+        val request = service.search()?.list("snippet")
+        val response: SearchListResponse = request
             ?.setQ(query)
-            ?.setMaxResults(50)
+            ?.setType("channel")
+            ?.setPart("snippet")
+            ?.setMaxResults(10)
             ?.setKey(API_KEY)
             ?.execute()
+            ?: return emptyList()
 
-        println("search($query): found ${response?.items?.size} items with nextPage: ${response?.nextPageToken}")
+        return response.items.map { it.toChannel().addSubscribers() }
+    }
 
-        val additionalPage = response?.nextPageToken?.let { token ->
-            request
-                ?.setQ(query)
-                ?.setMaxResults(50)
-                ?.setPageToken(token)
-                ?.setKey(API_KEY)
-                ?.execute()
+    fun getSubscribers(channelId: String): Int {
+        val service: YouTube = getService() ?: return 0
+        val request = service.channels().list("statistics")
+        val response = request
+            .setId(channelId)  // Set the channel ID
+            .setKey(API_KEY)   // Set your API key
+            .execute()         ?: return -1
+
+        if (response.items.isEmpty()) {
+            println("No channel found with ID: $channelId")
+            return -1
         }
 
-        println("search($query): found ${additionalPage?.items?.size} additional items")
+        val statistics = response.items[0].statistics
+        val subscriberCount = statistics.subscriberCount.toInt()
 
-        return ((response?.items ?: listOf()) + (additionalPage?.items ?: listOf())).map { it.toItem() }
+        return subscriberCount
     }
 
     /**
@@ -67,5 +79,10 @@ class YoutubeApi {
             .build()
     }
 
+    fun YoutubeChannel.addSubscribers(): YoutubeChannel {
+        channelId ?: return this
+        val subscribers = getSubscribers(channelId)
+        return this.copy(subscribers = subscribers)
+    }
 
 }

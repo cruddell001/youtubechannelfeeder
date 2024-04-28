@@ -34,9 +34,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
     // Youtube API
-    implementation("com.google.api-client:google-api-client:1.23.0") {
-        exclude(group = "com.google.guava", module = "guava-jdk5")
-    }
+    implementation("com.google.http-client:google-http-client-gson:1.19.0")
+    implementation("com.google.api-client:google-api-client:1.23.0")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.23.0")
     implementation("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
 
