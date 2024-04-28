@@ -53,6 +53,9 @@ dependencies {
 
     // database
     implementation("mysql:mysql-connector-java:8.0.30")
+
+    // html templating
+    implementation("io.ktor:ktor-server-freemarker:$ktor_version")
 }
 
 fun loadFromLocalPropertiesFile(): Properties {

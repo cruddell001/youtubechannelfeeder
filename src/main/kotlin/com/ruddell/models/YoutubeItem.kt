@@ -18,5 +18,8 @@ data class YoutubeChannel(
     val channelTitle: String?,
     val description: String?,
     val title: String?,
-    val subscribers: Int? = null
-)
+    val subscribers: Int? = null,
+    val youtubeUrl: String = "",
+) {
+    val rssFeed: String get() = "https://www.youtubefeeds.com/feeds/$channelId"
+}
