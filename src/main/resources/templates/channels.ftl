@@ -46,6 +46,10 @@
             <button id="searchButton" class="btn btn-primary">Search</button>
         </div>
     </div>
+    <div id="empty_view" class="text-center" style="padding-top:50px;">
+        <p class="text-muted">Can't be bothered to watch YouTube videos all day long?</p>
+        <p class="text-muted">Get a RSS feed of your favorite channel and read the transcripts at your own pace.</p>
+    </div>
     <div id="loading" class="text-center" style="display: none;">
         <div class="spinner-border text-primary" role="status">
             <span class="sr-only">Loading...</span>
@@ -75,6 +79,7 @@
                         $('#loading').hide();
                         if (data && data.length > 0) {
                             data.forEach(function(channel) {
+                                $('#empty_view').hide();
                                 $('#results').append(
                                     '<div class="card mb-3" style="height:125px;">' +
                                     '<div class="row no-gutters">' +

@@ -22,6 +22,7 @@ class ChannelSearchHelper: DatabaseHelper<YoutubeChannelSearch>() {
     }
 
     override fun insert(model: YoutubeChannelSearch): Boolean {
+        delete(model.query)
         return getConnection { connection ->
             val sql = "INSERT INTO youtube_channel_search (query, lastRan, channelIds) VALUES (?, ?, ?)"
             connection.prepareStatement(sql)?.use { stmt ->
