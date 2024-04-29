@@ -9,7 +9,6 @@
      xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
      xmlns:podcast="https://podcastindex.org/namespace/1.0"
      xmlns:rawvoice="http://www.rawvoice.com/rawvoiceRssModule/"
-     xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0"
      xmlns:georss="http://www.georss.org/georss"
      xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
 >
@@ -18,8 +17,8 @@
         <link>${channel.rssFeed}</link>
         <description>${channel.description}</description>
         <language>en-us</language>
-        <lastBuildDate>${channel.lastUpdated}</lastBuildDate>
-        <pubDate>${channel.lastUpdated}</pubDate>
+        <lastBuildDate>${channel.rssLastUpdated}</lastBuildDate>
+        <pubDate>${channel.rssLastUpdated}</pubDate>
         <ttl>1800</ttl>
         ${videos}
     </channel>

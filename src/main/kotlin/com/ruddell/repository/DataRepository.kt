@@ -3,6 +3,7 @@ package com.ruddell.repository
 
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toMySqlString
+import com.ruddell.extensions.toRfc822
 import com.ruddell.models.Transcript
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.models.YoutubeChannelSearch
@@ -32,7 +33,10 @@ object DataRepository {
         val channel = getChannel(channelId)
         if (channel.isStale()) {
             println("getVideos($channelId) is stale - fetching list from api")
-            val videoList = YoutubeApi.getVideosForChannel(channelId)
+            val videoList = YoutubeApi.getVideosForChannel(channelId).map { item ->
+                val rssDate = item.lastUpdated.takeIf { it.isNotEmpty() } ?: item.lastUpdated.toDate()?.toRfc822() ?: ""
+                item.copy(rssLastUpdated = rssDate)
+            }
             println("found ${videoList.size} videos for channel $channelId")
             channel?.copy(lastUpdated = Date().toMySqlString())?.let { updated ->
                 AppDatabase.channelHelper.insert(updated)

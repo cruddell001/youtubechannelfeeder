@@ -5,5 +5,5 @@
         <![CDATA[ <img src="${video.thumbnailUrl}" /><p>${video.description}</p>]]>
     </description>
     <guid>${video.transcriptUrl}</guid>
-    <pubDate>${video.lastUpdated}</pubDate>
+    <pubDate>${video.rssLastUpdated}</pubDate>
 </item>

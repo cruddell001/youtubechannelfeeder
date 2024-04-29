@@ -1,5 +1,7 @@
 package com.ruddell.plugins
 
+import com.ruddell.extensions.toDate
+import com.ruddell.extensions.toRfc822
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.repository.DataRepository
 import com.ruddell.repository.YoutubeApi
@@ -23,7 +25,11 @@ fun Application.configureRouting() {
         }
         get("/rss/{channelId}") {
             val channelId = call.parameters["channelId"] ?: ""
-            val channel = DataRepository.getChannel(channelId)
+            val channel = DataRepository.getChannel(channelId)?.let {
+                val dateUpdated = it.lastUpdated.toDate()
+                val rssDate = dateUpdated?.toRfc822()
+                it.copy(rssLastUpdated = rssDate ?: "")
+            }
             val videos = DataRepository.getVideos(channelId)
             val freemarkerConfig = templateConfig
             if (channel == null || videos == null || freemarkerConfig == null) {

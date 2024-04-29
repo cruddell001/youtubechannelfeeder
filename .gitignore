@@ -38,3 +38,5 @@ out/
 ### Project specific
 local.properties
 src/generated/
+*.sh
+*.pem
