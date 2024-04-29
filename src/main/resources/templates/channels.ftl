@@ -26,13 +26,23 @@
             align-items: flex-end;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">YouTube Channel Search</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4">YouTube Channel Search</h1>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="https://buymeacoffee.com/youtubechannelfeeder" target="_blank">
+                <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;">
+            </a>
+        </div>
+    </div>
     <div class="input-group mb-3">
         <input type="text" id="searchTerm" class="form-control" placeholder="Enter channel name...">
-        <div class="input-group-append">
+        <div class="input-group-append" style="padding-left: 8px">
             <button id="searchButton" class="btn btn-primary">Search</button>
         </div>
     </div>
@@ -66,22 +76,22 @@
                         if (data && data.length > 0) {
                             data.forEach(function(channel) {
                                 $('#results').append(
-                                    '<div class="card mb-3">' +
+                                    '<div class="card mb-3" style="height:125px;">' +
                                     '<div class="row no-gutters">' +
                                     '<div class="col-md-4">' +
                                     '<a href="${baseUrl}/channel/' + channel.channelId + '/videos" target="_blank">' +
-                                    '<img src="' + channel.thumbnailUrl + '" class="card-img" alt="' + channel.channelTitle + '" style="width: 100px; height: 100px;">' +
+                                    '<img src="' + channel.thumbnailUrl + '" class="card-img" alt="' + channel.channelTitle + '" style="width: 125px; height: 125px;">' +
                                     '</a>' +
                                     '</div>' +
                                     '<div class="col-md-8">' +
                                     '<div class="card-body">' +
                                     '<div class="card-title-row">' +
                                     '<h5 class="card-title">' + channel.channelTitle + ' (' + channel.subscribers.toLocaleString() + ' subscribers)</h5>' +
-                                    '<a href="' + channel.rssFeed + '" class="btn btn-link" target="_blank">RSS Feed</a>' +
+                                    '<a href="' + channel.rssFeed + '" class="btn btn-link" target="_blank"><img src="images/rss_button.png" style="width:50px;" /></a>' +
                                     '</div>' +
                                     '<div class="links-row">' +
                                     '<p class="card-text" style="padding-right:8px">' + channel.description + '</p>' +
-                                    '<a href="https://youtube.com/' + channel.youtubeUrl + '" target="_blank">View on Youtube</a>' +
+                                    '<a href="https://youtube.com/' + channel.youtubeUrl + '" target="_blank"><img src="images/watch_on_youtube.png" style="width:75px;" /></a>' +
                                     '</div>' +
                                     '</div>' +
                                     '</div>' +

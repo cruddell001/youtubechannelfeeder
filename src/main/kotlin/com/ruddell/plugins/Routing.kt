@@ -10,6 +10,7 @@ import com.ruddell.repository.YoutubeApi
 import com.ruddell.repository.database.AppDatabase
 import io.ktor.server.application.*
 import io.ktor.server.freemarker.*
+import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -22,6 +23,7 @@ fun Application.configureRouting() {
             call.response.headers.append("Content-Type", "application/json")
             call.respondText(res)
         }
+        staticResources("/images", "images")
         get("/") {
             call.respond(FreeMarkerContent("channels.ftl", mapOf("results" to emptyList<YoutubeChannel>(), "baseUrl" to BuildConfig.BASE_URL)))
         }
