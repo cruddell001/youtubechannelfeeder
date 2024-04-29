@@ -18,12 +18,12 @@ object YouTubeTranscriber {
         val res = client.get(url) {}
         val body = res.bodyAsText()
 
-        return parseTranscript(body)
+        return parseTranscript(videoId, body)
     }
 
     private val client = HttpClient(CIO) {}
 
-    private fun parseTranscript(xmlContent: String): Transcript? {
+    private fun parseTranscript(videoId: String, xmlContent: String): Transcript? {
         try {
             val dbFactory = DocumentBuilderFactory.newInstance()
             val dBuilder = dbFactory.newDocumentBuilder()
@@ -41,11 +41,11 @@ object YouTubeTranscriber {
                     val duration = element.getAttribute("dur").toDouble()
                     val content = element.textContent.trim()
 
-                    texts.add(TranscriptText(start, duration, content))
+                    texts.add(TranscriptText(videoId, start, duration, content))
                 }
             }
 
-            return Transcript(texts)
+            return Transcript(videoId, texts)
         } catch (e: Throwable) {
             log("Error parsing transcript: $e")
             e.printStackTrace()

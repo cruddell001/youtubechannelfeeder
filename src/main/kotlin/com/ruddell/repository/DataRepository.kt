@@ -55,7 +55,27 @@ object DataRepository {
         return AppDatabase.videoHelper.read(videoId)
     }
 
-    fun transcribeVideo(videoId: String): Transcript? = runBlocking { YouTubeTranscriber.transcribeVideo(videoId) }
+    fun transcribeVideo(videoId: String): Transcript? = runBlocking {
+        val cachedTranscript = AppDatabase.transcriptHelper
+            .read(videoId)
+            ?.copy(texts = AppDatabase.transcriptTextHelper.getByVideoId(videoId))
+        if (cachedTranscript != null) {
+            log("transcribeVideo($videoId) found cached transcript")
+            return@runBlocking cachedTranscript
+        }
+
+        log("transcribeVideo($videoId) fetching fresh transcript")
+        val freshTranscript = YouTubeTranscriber.transcribeVideo(videoId)
+        if (freshTranscript != null) {
+            AppDatabase.transcriptHelper.insert(freshTranscript)
+            AppDatabase.transcriptTextHelper.delete(videoId)
+            freshTranscript.texts.forEach {
+                AppDatabase.transcriptTextHelper.insert(it.copy(videoId = videoId))
+            }
+        }
+
+        return@runBlocking freshTranscript
+    }
 
     private fun YoutubeChannel?.isStale(): Boolean {
         if (this == null) return true
