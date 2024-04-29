@@ -8,6 +8,7 @@ import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.model.SearchListResponse
 import com.google.gson.Gson
 import com.ruddell.BuildConfig
+import com.ruddell.extensions.log
 import com.ruddell.extensions.toChannel
 import com.ruddell.extensions.toItem
 import com.ruddell.models.YoutubeChannel
@@ -121,7 +122,7 @@ object YoutubeApi {
             .execute()         ?: return -1
 
         if (response.items.isEmpty()) {
-            println("No channel found with ID: $channelId")
+            log("No channel found with ID: $channelId")
             return -1
         }
 

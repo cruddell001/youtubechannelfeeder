@@ -61,7 +61,9 @@ dependencies {
 
 fun loadFromLocalPropertiesFile(): Properties {
     val properties = Properties()
-    val propertiesFile = File("local.properties")
+    val propFileName = System.getenv("propertyFile") ?: "local.properties"
+    println("loadFromLocalPropertiesFile: $propFileName")
+    val propertiesFile = File(propFileName)
     if (propertiesFile.exists()) {
         properties.load(propertiesFile.inputStream())
     }

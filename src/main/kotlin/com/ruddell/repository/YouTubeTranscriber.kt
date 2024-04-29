@@ -1,5 +1,6 @@
 package com.ruddell.repository
 
+import com.ruddell.extensions.log
 import com.ruddell.models.Transcript
 import com.ruddell.models.TranscriptText
 import io.ktor.client.*
@@ -46,7 +47,7 @@ object YouTubeTranscriber {
 
             return Transcript(texts)
         } catch (e: Throwable) {
-            println("Error parsing transcript: $e")
+            log("Error parsing transcript: $e")
             e.printStackTrace()
             return null
         }

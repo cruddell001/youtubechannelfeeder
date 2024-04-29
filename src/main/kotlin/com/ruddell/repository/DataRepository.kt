@@ -1,6 +1,7 @@
 package com.ruddell.repository
 
 
+import com.ruddell.extensions.log
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toMySqlString
 import com.ruddell.extensions.toRfc822
@@ -32,12 +33,12 @@ object DataRepository {
     fun getVideos(channelId: String): List<YoutubeItem> {
         val channel = getChannel(channelId)
         if (channel.isStale()) {
-            println("getVideos($channelId) is stale - fetching list from api")
+            log("getVideos($channelId) is stale - fetching list from api")
             val videoList = YoutubeApi.getVideosForChannel(channelId).map { item ->
                 val rssDate = item.lastUpdated.takeIf { it.isNotEmpty() } ?: item.lastUpdated.toDate()?.toRfc822() ?: ""
                 item.copy(rssLastUpdated = rssDate)
             }
-            println("found ${videoList.size} videos for channel $channelId")
+            log("found ${videoList.size} videos for channel $channelId")
             channel?.copy(lastUpdated = Date().toMySqlString())?.let { updated ->
                 AppDatabase.channelHelper.insert(updated)
             }
@@ -46,7 +47,7 @@ object DataRepository {
             }
             return videoList
         }
-        println("getVideos($channelId) is fresh - fetching list from db")
+        log("getVideos($channelId) is fresh - fetching list from db")
         return AppDatabase.videoHelper.getByChannelId(channelId)
     }
 
@@ -60,7 +61,7 @@ object DataRepository {
         if (this == null) return true
         val timeElapsed = this.dateLastRan()?.timeElapsed() ?: 1f
         val maxDurationInDays = 1f / 24f
-        println("channel is stale?: $timeElapsed > $maxDurationInDays (from ${this.dateLastRan()}): ${this.lastUpdated}")
+        log("channel is stale?: $timeElapsed > $maxDurationInDays (from ${this.dateLastRan()}): ${this.lastUpdated}")
         return timeElapsed > maxDurationInDays
     }
 

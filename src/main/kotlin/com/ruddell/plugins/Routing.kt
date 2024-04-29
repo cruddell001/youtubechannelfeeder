@@ -1,5 +1,6 @@
 package com.ruddell.plugins
 
+import com.ruddell.extensions.log
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toRfc822
 import com.ruddell.models.YoutubeChannel
@@ -25,6 +26,7 @@ fun Application.configureRouting() {
         }
         get("/rss/{channelId}") {
             val channelId = call.parameters["channelId"] ?: ""
+            log("getting rss feed for channel: $channelId")
             val channel = DataRepository.getChannel(channelId)?.let {
                 val dateUpdated = it.lastUpdated.toDate()
                 val rssDate = dateUpdated?.toRfc822()
@@ -38,7 +40,7 @@ fun Application.configureRouting() {
             }
             // header for rss feed:
             call.response.headers.append("Content-Type", "text/xml;charset=UTF-8")
-            println("showing rss feed for channel: ${channel.channelTitle}: ${videos.size} videos")
+            log("showing rss feed for channel: ${channel.channelTitle}: ${videos.size} videos")
             val body = renderYouTubeRssFeed(channel, videos, freemarkerConfig)
             call.respondText(body)
         }
