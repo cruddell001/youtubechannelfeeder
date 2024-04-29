@@ -1,5 +1,6 @@
 package com.ruddell.plugins
 
+import com.ruddell.BuildConfig
 import com.ruddell.extensions.log
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toRfc822
@@ -22,7 +23,7 @@ fun Application.configureRouting() {
             call.respondText(res)
         }
         get("/") {
-            call.respond(FreeMarkerContent("channels.ftl", mapOf("results" to emptyList<YoutubeChannel>())))
+            call.respond(FreeMarkerContent("channels.ftl", mapOf("results" to emptyList<YoutubeChannel>(), "baseUrl" to BuildConfig.BASE_URL)))
         }
         get("/rss/{channelId}") {
             val channelId = call.parameters["channelId"] ?: ""
@@ -66,6 +67,20 @@ fun Application.configureRouting() {
                 return@get
             }
             call.respond(FreeMarkerContent("video.ftl", mapOf("youtubeItem" to video, "transcript" to transcript)))
+        }
+        get("/channel/{channelId}/videos") {
+            val channelId = call.parameters["channelId"]
+            if (channelId.isNullOrEmpty()) {
+                call.respondText("Channel not found")
+                return@get
+            }
+            val channel = DataRepository.getChannel(channelId)?.let {
+                val dateUpdated = it.lastUpdated.toDate()
+                val rssDate = dateUpdated?.toRfc822()
+                it.copy(rssLastUpdated = rssDate ?: "")
+            }
+            val videos = DataRepository.getVideos(channelId)
+            call.respond(FreeMarkerContent("yt_channel_listing.ftl", mapOf("videos" to videos, "channel" to channel)))
         }
     }
 }

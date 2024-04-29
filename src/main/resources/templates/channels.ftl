@@ -69,7 +69,7 @@
                                     '<div class="card mb-3">' +
                                     '<div class="row no-gutters">' +
                                     '<div class="col-md-4">' +
-                                    '<a href="https://youtube.com/' + channel.youtubeUrl + '" target="_blank">' +
+                                    '<a href="${baseUrl}/channel/' + channel.channelId + '/videos" target="_blank">' +
                                     '<img src="' + channel.thumbnailUrl + '" class="card-img" alt="' + channel.channelTitle + '" style="width: 100px; height: 100px;">' +
                                     '</a>' +
                                     '</div>' +
