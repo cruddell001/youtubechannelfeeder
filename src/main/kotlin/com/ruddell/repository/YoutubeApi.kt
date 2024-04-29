@@ -30,7 +30,22 @@ object YoutubeApi {
     private const val APPLICATION_NAME = "API code samples"
     private val JSON_FACTORY: JsonFactory get() = GsonFactory.getDefaultInstance()
 
+    fun getChannelByUrl(url: String): List<YoutubeChannel> {
+        val service: YouTube = getService() ?: return emptyList()
+        val username = url.split("@").lastOrNull() ?: return emptyList()
+        val request = service.channels()?.list("snippet")
+        val response = request
+            ?.setForUsername(username)
+            ?.setPart("snippet")
+            ?.setKey(API_KEY)
+            ?.execute()
+            ?: return emptyList()
+
+        return response.items.map { it.toChannel() }.addDetails()
+    }
+
     fun searchChannels(query: String): List<YoutubeChannel> {
+        if (query.startsWith("https://youtube.com/")) return getChannelByUrl(query)
         val service: YouTube = getService() ?: return emptyList()
         val request = service.search()?.list("snippet")
         val response: SearchListResponse = request
