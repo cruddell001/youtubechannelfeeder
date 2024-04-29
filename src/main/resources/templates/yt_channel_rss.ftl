@@ -1,15 +1,26 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
-    <link rel="self" href="http://www.youtube.com/feeds/videos.xml?channel_id=${channel.channelId}"/>
-    <id>yt:channel:${channel.channelId}</id>
-    <yt:channelId>${channel.channelId}</yt:channelId>
-    <title>${channel.title}</title>
-    <link rel="alternate" href="https://www.youtube.com/channel/${channel.channelId}"/>
-    <author>
-        <name>YouTube Channel Feeder</name>
-        <uri>https://www.youtube.com/channel/${channel.channelId}</uri>
-    </author>
-    <published>${channel.rssDateUpdated}</published>
-    ${videos}
-</feed>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+     xmlns:podcast="https://podcastindex.org/namespace/1.0"
+     xmlns:rawvoice="http://www.rawvoice.com/rawvoiceRssModule/"
+     xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+>
+    <channel>
+        <title>${channel.title}</title>
+        <link>${channel.rssFeed}</link>
+        <description>${channel.description}</description>
+        <language>en-us</language>
+        <lastBuildDate>${channel.lastUpdated}</lastBuildDate>
+        <pubDate>${channel.lastUpdated}</pubDate>
+        <ttl>1800</ttl>
+        ${videos}
+    </channel>
+</rss>

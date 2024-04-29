@@ -3,6 +3,7 @@ package com.ruddell.plugins
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.repository.DataRepository
 import com.ruddell.repository.YoutubeApi
+import com.ruddell.repository.database.AppDatabase
 import io.ktor.server.application.*
 import io.ktor.server.freemarker.*
 import io.ktor.server.response.*
@@ -43,6 +44,20 @@ fun Application.configureRouting() {
                 val res = DataRepository.performSearch(query)
                 call.respond(res)
             }
+        }
+        get("/video/{videoId}") {
+            val videoId = call.parameters["videoId"] ?: ""
+            val video = DataRepository.getVideo(videoId)
+            if (video == null) {
+                call.respondText("Video not found")
+                return@get
+            }
+            val transcript = DataRepository.transcribeVideo(videoId)
+            if (transcript == null) {
+                call.respondText("Unable to transcribe video")
+                return@get
+            }
+            call.respond(FreeMarkerContent("video.ftl", mapOf("youtubeItem" to video, "transcript" to transcript)))
         }
     }
 }

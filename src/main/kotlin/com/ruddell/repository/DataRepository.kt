@@ -3,10 +3,12 @@ package com.ruddell.repository
 
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toMySqlString
+import com.ruddell.models.Transcript
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.models.YoutubeChannelSearch
 import com.ruddell.models.YoutubeItem
 import com.ruddell.repository.database.AppDatabase
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 object DataRepository {
@@ -43,6 +45,12 @@ object DataRepository {
         println("getVideos($channelId) is fresh - fetching list from db")
         return AppDatabase.videoHelper.getByChannelId(channelId)
     }
+
+    fun getVideo(videoId: String): YoutubeItem? {
+        return AppDatabase.videoHelper.read(videoId)
+    }
+
+    fun transcribeVideo(videoId: String): Transcript? = runBlocking { YouTubeTranscriber.transcribeVideo(videoId) }
 
     private fun YoutubeChannel?.isStale(): Boolean {
         if (this == null) return true
