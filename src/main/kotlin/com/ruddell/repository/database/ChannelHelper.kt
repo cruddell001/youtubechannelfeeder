@@ -7,6 +7,7 @@ class ChannelHelper: DatabaseHelper<YoutubeChannel>() {
 
     override fun insert(model: YoutubeChannel): Boolean {
         model.channelId?.let { delete(it) }
+        println("inserting channel: ${model.channelId}: ${model.lastUpdated}")
         return getConnection { connection ->
             val sql = "INSERT INTO youtube_channels (channelId, thumbnailUrl, channelTitle, description, title, subscribers, youtubeUrl, lastUpdated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
             connection.prepareStatement(sql)?.use { stmt ->

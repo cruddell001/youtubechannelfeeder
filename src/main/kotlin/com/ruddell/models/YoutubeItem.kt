@@ -1,7 +1,9 @@
 package com.ruddell.models
 
+import com.ruddell.BuildConfig
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toMySqlString
+import com.ruddell.extensions.toRssString
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -12,7 +14,14 @@ data class YoutubeItem(
     val title: String?,
     val subtitle: String?,
     val author: String?,
-)
+    val description: String?,
+    val channelId: String?,
+    val lastUpdated: String = Date().toMySqlString()
+) {
+    val dateLastUpdated: Date? get() = lastUpdated.toDate()
+    val rssDateUpdated: String get() = dateLastUpdated?.toRssString() ?: ""
+    val pageUrl: String get() = "${BuildConfig.BASE_URL}/video/$id"
+}
 
 @Serializable
 data class YoutubeChannel(
@@ -23,10 +32,11 @@ data class YoutubeChannel(
     val title: String?,
     val subscribers: Int? = null,
     val youtubeUrl: String = "",
-    val lastUpdated: String = Date().toMySqlString()
+    val lastUpdated: String = Date().toMySqlString(),
+    val rssFeed: String = "${BuildConfig.BASE_URL}/rss/$channelId"
 ) {
-    val rssFeed: String get() = "https://www.youtubefeeds.com/feeds/$channelId"
     val dateLastUpdated: Date? get() = lastUpdated.toDate()
+    val rssDateUpdated: String get() = dateLastUpdated?.toRssString() ?: ""
 }
 
 @Serializable

@@ -24,8 +24,9 @@ object AppDatabase {
 
     val channelHelper = ChannelHelper()
     val searchHelper = ChannelSearchHelper()
+    val videoHelper = VideoHelper()
 
-    private val helpers = listOf(channelHelper, searchHelper)
+    private val helpers = listOf(channelHelper, searchHelper, videoHelper)
 
     init {
         helpers.forEach { it.createTable() }

@@ -9,7 +9,9 @@ fun SearchResult.toItem() = YoutubeItem(
     thumbnailUrl = this.snippet?.thumbnails?.medium?.url,
     title = this.snippet?.title,
     subtitle = this.snippet?.channelTitle,
-    author = this.snippet?.channelTitle
+    author = this.snippet?.channelTitle,
+    channelId = this.snippet?.channelId,
+    description = this.snippet?.description ?: ""
 )
 
 fun SearchResult.toChannel() = YoutubeChannel(

@@ -9,7 +9,9 @@ import com.google.api.services.youtube.model.SearchListResponse
 import com.google.gson.Gson
 import com.ruddell.BuildConfig
 import com.ruddell.extensions.toChannel
+import com.ruddell.extensions.toItem
 import com.ruddell.models.YoutubeChannel
+import com.ruddell.models.YoutubeItem
 import java.io.IOException
 import java.security.GeneralSecurityException
 
@@ -40,6 +42,21 @@ object YoutubeApi {
             ?: return emptyList()
 
         return response.items.map { it.toChannel() }.addDetails()
+    }
+
+    fun getVideosForChannel(channelId: String): List<YoutubeItem> {
+        val service: YouTube = getService() ?: return emptyList()
+        val request = service.search()?.list("snippet")
+        val response: SearchListResponse = request
+            ?.setChannelId(channelId)
+            ?.setType("video")
+            ?.setPart("snippet")
+            ?.setMaxResults(10)
+            ?.setKey(API_KEY)
+            ?.execute()
+            ?: return emptyList()
+
+        return response.items.map { it.toItem() }
     }
 
     fun List<YoutubeChannel>.addDetails(): List<YoutubeChannel> {
@@ -81,12 +98,11 @@ object YoutubeApi {
         }.toMap()
     }
 
-    fun searchChannelsTest(query: String): String {
+    fun searchTest(query: String): String {
         val service: YouTube = getService() ?: return ""
         val request = service.search()?.list("snippet")
         val response: SearchListResponse = request
             ?.setQ(query)
-            ?.setType("channel")
             ?.setPart("snippet")
             ?.setMaxResults(10)
             ?.setKey(API_KEY)

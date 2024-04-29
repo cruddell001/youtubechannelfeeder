@@ -77,7 +77,7 @@
                                     '<div class="card-body">' +
                                     '<div class="card-title-row">' +
                                     '<h5 class="card-title">' + channel.channelTitle + ' (' + channel.subscribers.toLocaleString() + ' subscribers)</h5>' +
-                                    '<a href="' + channel.rssFeed + '" class="btn btn-link">RSS Feed</a>' +
+                                    '<a href="' + channel.rssFeed + '" class="btn btn-link" target="_blank">RSS Feed</a>' +
                                     '</div>' +
                                     '<div class="links-row">' +
                                     '<p class="card-text" style="padding-right:8px">' + channel.description + '</p>' +
