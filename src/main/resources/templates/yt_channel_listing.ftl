@@ -41,7 +41,7 @@
             <p>${video.description}</p>
         </div>
         <div class="video-link">
-            <a href="https://youtube.com/watch?v=${video.id}">Watch on YouTube</a>
+            <a href="${video.youtubeUrl}" target="_blank"><img src="/images/watch_on_youtube.png" style="width:75px;" /></a>
         </div>
     </div>
 </#list>

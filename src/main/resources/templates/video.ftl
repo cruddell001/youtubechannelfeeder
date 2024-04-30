@@ -26,7 +26,7 @@
     <div class="media-body">
         <h5 class="mt-0">By ${youtubeItem.author!}</h5>
         <p>${youtubeItem.description!}</p>
-        <p><a href="${youtubeItem.pageUrl!}" target="_blank">Watch Video</a></p>
+        <p><a href="${youtubeItem.youtubeUrl}" target="_blank"><img src="/images/watch_on_youtube.png" style="width:75px;" /></a></p>
         <p>Last updated: ${youtubeItem.rssDateUpdated!}</p>
     </div>
 </div>

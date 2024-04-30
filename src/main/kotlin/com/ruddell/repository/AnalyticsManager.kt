@@ -4,6 +4,7 @@ import com.ruddell.extensions.toJson
 import com.ruddell.models.AnalyticEvent
 import com.ruddell.repository.database.AppDatabase
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import kotlinx.serialization.Serializable
 
 object AnalyticsManager {
@@ -37,9 +38,10 @@ object AnalyticsManager {
     }
 
     private fun ApplicationCall.buildWebRequest(path: String): WebRequest {
+        val ipAddress = request.header("X-Forwarded-For") ?: request.local.remoteHost
         return WebRequest(
             path = path,
-            ipAddress = request.local.remoteHost,
+            ipAddress = ipAddress,
             userAgent = request.headers["User-Agent"] ?: ""
         )
     }
