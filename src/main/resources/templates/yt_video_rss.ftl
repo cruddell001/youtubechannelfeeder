@@ -6,5 +6,5 @@
     </description>
     <media:content url="${video.thumbnailUrl}" type="image/jpeg"/>
     <guid>${video.transcriptUrl}</guid>
-    <pubDate>${video.rssLastUpdated}</pubDate>
+    <pubDate>${video.publishedDate}</pubDate>
 </item>

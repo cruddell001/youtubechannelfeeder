@@ -24,13 +24,14 @@ class VideoHelper: DatabaseHelper<YoutubeItem>() {
         author = rs.getString("author"),
         description = rs.getString("description"),
         channelId = rs.getString("channelId"),
-        lastUpdated = rs.getString("lastUpdated")
+        lastUpdated = rs.getString("lastUpdated"),
+        youtubeDate = rs.getString("youtubeDate"),
     )
 
     override fun insert(model: YoutubeItem): Boolean {
         delete(model.id ?: "")
         return getConnection { connection ->
-            val sql = "INSERT INTO youtube_videos (id, thumbnailUrl, title, subtitle, author, description, channelId, lastUpdated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            val sql = "INSERT INTO youtube_videos (id, thumbnailUrl, title, subtitle, author, description, channelId, lastUpdated, youtubeDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             connection.prepareStatement(sql)?.use { stmt ->
                 stmt.setString(1, model.id)
                 stmt.setString(2, model.thumbnailUrl)
@@ -40,6 +41,7 @@ class VideoHelper: DatabaseHelper<YoutubeItem>() {
                 stmt.setString(6, model.description)
                 stmt.setString(7, model.channelId)
                 stmt.setString(8, model.lastUpdated)
+                stmt.setString(9, model.youtubeDate)
                 stmt.executeUpdate() > 0
             } ?: false
         }
@@ -126,7 +128,8 @@ class VideoHelper: DatabaseHelper<YoutubeItem>() {
                     author VARCHAR(255),
                     description TEXT,
                     channelId VARCHAR(255),
-                    lastUpdated VARCHAR(255)
+                    lastUpdated VARCHAR(255),
+                    youtubeDate VARCHAR(255)
                 )
             """.trimIndent()
             connection.prepareStatement(sql).execute()

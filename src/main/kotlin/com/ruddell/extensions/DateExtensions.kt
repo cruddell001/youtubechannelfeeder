@@ -1,5 +1,6 @@
 package com.ruddell.extensions
 
+import com.google.api.client.util.DateTime
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -15,3 +16,5 @@ fun Date.toRssString(): String = SimpleDateFormat(RSS_DATE_FORMAT).format(this)
 fun Date.toRfc822(): String = SimpleDateFormat(RFC_822_DATE_FORMAT).format(this)
 
 fun String.toDate(format: String = MYSQL_DATE_FORMAT): Date? = try { SimpleDateFormat(MYSQL_DATE_FORMAT).parse(this) } catch (e: Exception) { null }
+
+fun DateTime.toDate(): Date = Date(this.value)

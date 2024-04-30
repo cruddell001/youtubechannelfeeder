@@ -27,8 +27,9 @@ object AppDatabase {
     val videoHelper = VideoHelper()
     val transcriptHelper = TranscriptHelper()
     val transcriptTextHelper = TranscriptTextHelper()
+    val analyticsHelper = AnalyticsHelper()
 
-    private val helpers = listOf(channelHelper, searchHelper, videoHelper, transcriptHelper, transcriptTextHelper)
+    private val helpers = listOf(channelHelper, searchHelper, videoHelper, transcriptHelper, transcriptTextHelper, analyticsHelper)
 
     init {
         helpers.forEach { it.createTable() }

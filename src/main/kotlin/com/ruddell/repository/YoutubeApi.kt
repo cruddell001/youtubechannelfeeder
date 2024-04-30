@@ -67,7 +67,7 @@ object YoutubeApi {
             ?.setChannelId(channelId)
             ?.setType("video")
             ?.setPart("snippet")
-            ?.setMaxResults(10)
+            ?.setMaxResults(50)
             ?.setKey(API_KEY)
             ?.execute()
             ?: return emptyList()

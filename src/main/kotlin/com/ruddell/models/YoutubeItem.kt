@@ -17,9 +17,11 @@ data class YoutubeItem(
     val author: String?,
     val description: String?,
     val channelId: String?,
+    val youtubeDate: String?,
     val lastUpdated: String = Date().toMySqlString(),
     val transcriptUrl: String = "${BuildConfig.BASE_URL}/video/$id",
     val rssLastUpdated: String = Date().toRfc822(),
+    val publishedDate: String = youtubeDate?.takeIf { it.isNotEmpty() } ?: rssLastUpdated
 )
 
 @Serializable

@@ -4,7 +4,9 @@ import com.ruddell.BuildConfig
 import com.ruddell.extensions.log
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toRfc822
+import com.ruddell.models.AnalyticEvent
 import com.ruddell.models.YoutubeChannel
+import com.ruddell.repository.AnalyticsManager
 import com.ruddell.repository.DataRepository
 import com.ruddell.repository.YoutubeApi
 import com.ruddell.repository.database.AppDatabase
@@ -25,9 +27,11 @@ fun Application.configureRouting() {
         }
         staticResources("/images", "images")
         get("/") {
+            AnalyticsManager.trackHomePageLoad(call)
             call.respond(FreeMarkerContent("channels.ftl", mapOf("results" to emptyList<YoutubeChannel>(), "baseUrl" to BuildConfig.BASE_URL)))
         }
         get("/rss/{channelId}") {
+            AnalyticsManager.trackChannelFeed(call)
             val channelId = call.parameters["channelId"] ?: ""
             log("getting rss feed for channel: $channelId")
             val channel = DataRepository.getChannel(channelId)?.let {
@@ -48,6 +52,7 @@ fun Application.configureRouting() {
             call.respondText(body)
         }
         get("/searchApi") {
+            AnalyticsManager.trackChannelSearch(call)
             val query = call.request.queryParameters["q"]
             if (query == null) {
                 call.respondText("[]")
@@ -57,6 +62,7 @@ fun Application.configureRouting() {
             }
         }
         get("/video/{videoId}") {
+            AnalyticsManager.trackTranscriptRequest(call)
             val videoId = call.parameters["videoId"] ?: ""
             val video = DataRepository.getVideo(videoId)
             if (video == null) {
@@ -71,6 +77,7 @@ fun Application.configureRouting() {
             call.respond(FreeMarkerContent("video.ftl", mapOf("youtubeItem" to video, "transcript" to transcript)))
         }
         get("/channel/{channelId}/videos") {
+            AnalyticsManager.trackChannelVideosWebView(call)
             val channelId = call.parameters["channelId"]
             if (channelId.isNullOrEmpty()) {
                 call.respondText("Channel not found")
