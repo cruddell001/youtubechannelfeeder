@@ -4,6 +4,7 @@ import com.google.api.services.youtube.model.Channel
 import com.google.api.services.youtube.model.SearchResult
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.models.YoutubeItem
+import com.ruddell.plugins.sanitizeForRss
 
 fun SearchResult.toItem() = YoutubeItem(
     id = this.id?.videoId,
@@ -30,4 +31,9 @@ fun Channel.toChannel() = YoutubeChannel(
     channelTitle = this.snippet?.title,
     description = this.snippet?.description,
     title = this.snippet?.title
+)
+
+fun YoutubeChannel.sanitize(): YoutubeChannel = this.copy(
+    title = title?.sanitizeForRss() ?: channelTitle?.sanitizeForRss() ?: "",
+    description = description?.sanitizeForRss() ?: ""
 )

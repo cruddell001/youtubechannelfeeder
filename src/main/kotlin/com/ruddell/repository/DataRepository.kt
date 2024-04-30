@@ -27,7 +27,15 @@ object DataRepository {
     }
 
     fun getChannel(channelId: String): YoutubeChannel? {
-        return AppDatabase.channelHelper.read(channelId)
+        val cached = AppDatabase.channelHelper.read(channelId)
+        if (cached == null) {
+            val fresh = YoutubeApi.getChannelById(channelId).firstOrNull()
+            if (fresh != null) {
+                AppDatabase.channelHelper.insert(fresh)
+                return fresh
+            }
+        }
+        return cached
     }
 
     fun getVideos(channelId: String): List<YoutubeItem> {

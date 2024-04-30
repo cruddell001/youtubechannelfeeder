@@ -44,6 +44,19 @@ object YoutubeApi {
         return response.items?.map { it.toChannel() }?.addDetails() ?: emptyList()
     }
 
+    fun getChannelById(channelId: String): List<YoutubeChannel> {
+        val service: YouTube = getService() ?: return emptyList()
+        val request = service.channels()?.list("snippet")
+        val response = request
+            ?.setId(channelId)
+            ?.setPart("snippet")
+            ?.setKey(API_KEY)
+            ?.execute()
+            ?: return emptyList()
+
+        return response.items?.map { it.toChannel() }?.addDetails() ?: emptyList()
+    }
+
     fun searchChannels(query: String): List<YoutubeChannel> {
         if (query.startsWith("https://youtube.com/")) return getChannelByUrl(query)
         val service: YouTube = getService() ?: return emptyList()

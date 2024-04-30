@@ -2,6 +2,7 @@ package com.ruddell.plugins
 
 import com.ruddell.BuildConfig
 import com.ruddell.extensions.log
+import com.ruddell.extensions.sanitize
 import com.ruddell.extensions.toDate
 import com.ruddell.extensions.toRfc822
 import com.ruddell.models.AnalyticEvent
@@ -86,8 +87,8 @@ fun Application.configureRouting() {
             val channel = DataRepository.getChannel(channelId)?.let {
                 val dateUpdated = it.lastUpdated.toDate()
                 val rssDate = dateUpdated?.toRfc822()
-                it.copy(rssLastUpdated = rssDate ?: "")
-            }
+                it.copy(rssLastUpdated = rssDate ?: "").sanitize()
+            } ?: YoutubeChannel("", "", "", "", "")
             val videos = DataRepository.getVideos(channelId)
             call.respond(FreeMarkerContent("yt_channel_listing.ftl", mapOf("videos" to videos, "channel" to channel)))
         }

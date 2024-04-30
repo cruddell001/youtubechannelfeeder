@@ -1,5 +1,7 @@
 package com.ruddell.plugins
 
+import com.ruddell.extensions.log
+import com.ruddell.extensions.sanitize
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.models.YoutubeItem
 import freemarker.cache.ClassTemplateLoader
@@ -26,8 +28,8 @@ fun renderYouTubeVideoForRss(channel: YoutubeChannel, item: YoutubeItem, freemar
 }
 
 fun YoutubeItem.sanitize(): YoutubeItem = this.copy(
-    description = description?.sanitizeForRss(),
-    title = title?.sanitizeForRss(),
+    description = description?.sanitizeForRss() ?: "",
+    title = title?.sanitizeForRss() ?: "",
 )
 
 fun String.sanitizeForRss(): String = this
@@ -38,10 +40,12 @@ fun String.sanitizeForRss(): String = this
     .replace("'", "&apos;")
 
 fun renderYouTubeRssFeed(channel: YoutubeChannel, videos: List<YoutubeItem>, freemarkerConfig: Configuration): String {
-    val itemsContent = videos.joinToString("") { renderYouTubeVideoForRss(channel, it, freemarkerConfig) }
+    val sanitized = channel.sanitize()
+    log("renderYouTubeRssFeed: ${sanitized.title}: ${videos.size} videos")
+    val itemsContent = videos.joinToString("") { renderYouTubeVideoForRss(sanitized, it, freemarkerConfig) }
     val mainTemplate = freemarkerConfig.getTemplate("yt_channel_rss.ftl")
     return StringWriter().use { writer ->
-        mainTemplate.process(mapOf("channel" to channel, "videos" to itemsContent), writer)
+        mainTemplate.process(mapOf("channel" to sanitized, "videos" to itemsContent), writer)
         writer.toString()
     }.removePrefix("\n")
 }
