@@ -41,7 +41,7 @@ object YoutubeApi {
             ?.execute()
             ?: return emptyList()
 
-        return response.items.map { it.toChannel() }.addDetails()
+        return response.items?.map { it.toChannel() }?.addDetails() ?: emptyList()
     }
 
     fun searchChannels(query: String): List<YoutubeChannel> {

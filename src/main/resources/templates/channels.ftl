@@ -27,6 +27,7 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta property="og:image" content="/images/youtube_channel_feeder.jpg" />
 </head>
 <body>
 <div class="container mt-5">
@@ -49,6 +50,7 @@
     <div id="empty_view" class="text-center" style="padding-top:50px;">
         <p class="text-muted">Can't be bothered to watch YouTube videos all day long?</p>
         <p class="text-muted">Get a RSS feed of your favorite channel and read the transcripts at your own pace.</p>
+        <img src="/images/youtube_channel_feeder.jpg" style="width:250px;" />
     </div>
     <div id="loading" class="text-center" style="display: none;">
         <div class="spinner-border text-primary" role="status">
@@ -81,7 +83,7 @@
                             data.forEach(function(channel) {
                                 $('#empty_view').hide();
                                 $('#results').append(
-                                    '<div class="card mb-3" style="height:125px;">' +
+                                    '<div class="card mb-3">' +
                                     '<div class="row no-gutters">' +
                                     '<div class="col-md-4">' +
                                     '<a href="${baseUrl}/channel/' + channel.channelId + '/videos" target="_blank">' +

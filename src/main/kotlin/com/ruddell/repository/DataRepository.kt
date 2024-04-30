@@ -32,7 +32,8 @@ object DataRepository {
 
     fun getVideos(channelId: String): List<YoutubeItem> {
         val channel = getChannel(channelId)
-        if (channel.isStale()) {
+        val cachedVideos = AppDatabase.videoHelper.getByChannelId(channelId)
+        if (channel.isStale() || cachedVideos.isEmpty()) {
             log("getVideos($channelId) is stale - fetching list from api")
             val videoList = YoutubeApi.getVideosForChannel(channelId).map { item ->
                 val rssDate = item.lastUpdated.takeIf { it.isNotEmpty() } ?: item.lastUpdated.toDate()?.toRfc822() ?: ""
@@ -80,7 +81,7 @@ object DataRepository {
     private fun YoutubeChannel?.isStale(): Boolean {
         if (this == null) return true
         val timeElapsed = this.dateLastRan()?.timeElapsed() ?: 1f
-        val maxDurationInDays = 1f / 24f
+        val maxDurationInDays = 3f / 24f
         log("channel is stale?: $timeElapsed > $maxDurationInDays (from ${this.dateLastRan()}): ${this.lastUpdated}")
         return timeElapsed > maxDurationInDays
     }
