@@ -25,6 +25,12 @@ object AnalyticsManager {
         AppDatabase.analyticsHelper.insert(AnalyticEvent.GET_FEED, channelId, extraData.toJson())
     }
 
+    fun trackVideoPageLoad(call: ApplicationCall) {
+        val videoId = call.parameters["videoId"] ?: ""
+        val extraData = call.buildWebRequest("/video/$videoId")
+        AppDatabase.analyticsHelper.insert(AnalyticEvent.LOAD_VIDEO_PAGE, videoId, extraData.toJson())
+    }
+
     fun trackTranscriptRequest(call: ApplicationCall) {
         val videoId = call.parameters["videoId"] ?: ""
         val extraData = call.buildWebRequest("/video/$videoId")

@@ -1,5 +1,6 @@
 package com.ruddell.repository.database
 
+import com.ruddell.extensions.log
 import com.ruddell.extensions.toMySqlString
 import com.ruddell.models.AnalyticEvent
 import com.ruddell.models.AnalyticsItem
@@ -17,6 +18,7 @@ class AnalyticsHelper: DatabaseHelper<AnalyticsItem>() {
     )
 
     fun insert(event: AnalyticEvent, query: String, extraData: String): Boolean {
+        log("AnalyticEvent: ${event.key}: $query")
         return insert(AnalyticsItem(event.key, query, extraData = extraData))
     }
 

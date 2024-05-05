@@ -11,6 +11,7 @@ import com.ruddell.repository.AnalyticsManager
 import com.ruddell.repository.DataRepository
 import com.ruddell.repository.YoutubeApi
 import com.ruddell.repository.database.AppDatabase
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.freemarker.*
 import io.ktor.server.http.content.*
@@ -63,19 +64,34 @@ fun Application.configureRouting() {
             }
         }
         get("/video/{videoId}") {
-            AnalyticsManager.trackTranscriptRequest(call)
+            AnalyticsManager.trackVideoPageLoad(call)
             val videoId = call.parameters["videoId"] ?: ""
             val video = DataRepository.getVideo(videoId)
             if (video == null) {
                 call.respondText("Video not found")
                 return@get
             }
+
+            call.respond(FreeMarkerContent("video.ftl", mapOf("youtubeItem" to video)))
+        }
+        get("cache/transcription/{videoId}") {
+            val videoId = call.parameters["videoId"] ?: ""
+            val transcript = DataRepository.getCachedTranscription(videoId)?.takeIf { it.texts.isNotEmpty() }
+            if (transcript == null) {
+                call.respond(HttpStatusCode.NoContent, "")
+                return@get
+            }
+            call.respond(transcript)
+        }
+        get("transcribe/{videoId}") {
+            AnalyticsManager.trackTranscriptRequest(call)
+            val videoId = call.parameters["videoId"] ?: ""
             val transcript = DataRepository.transcribeVideo(videoId)
             if (transcript == null) {
                 call.respondText("Unable to transcribe video")
                 return@get
             }
-            call.respond(FreeMarkerContent("video.ftl", mapOf("youtubeItem" to video, "transcript" to transcript)))
+            call.respond(transcript)
         }
         get("/channel/{channelId}/videos") {
             AnalyticsManager.trackChannelVideosWebView(call)

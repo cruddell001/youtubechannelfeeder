@@ -17,6 +17,7 @@ enum class AnalyticEvent(val key: String) {
     HOME_PAGE_LOAD("home_page_load"),
     SEARCH("search"),
     GET_FEED("get_feed"),
+    LOAD_VIDEO_PAGE("load_video_page"),
     GET_TRANSCRIPT("get_transcript"),
     VIEW_CHANNEL_VIDEOS("view_channel_videos")
 }

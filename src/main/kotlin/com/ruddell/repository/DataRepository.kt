@@ -64,10 +64,13 @@ object DataRepository {
         return AppDatabase.videoHelper.read(videoId)
     }
 
-    fun transcribeVideo(videoId: String): Transcript? = runBlocking {
-        val cachedTranscript = AppDatabase.transcriptHelper
-            .read(videoId)
+    fun getCachedTranscription(videoId: String): Transcript? {
+        return AppDatabase.transcriptHelper.read(videoId)
             ?.copy(texts = AppDatabase.transcriptTextHelper.getByVideoId(videoId))
+    }
+
+    fun transcribeVideo(videoId: String): Transcript? = runBlocking {
+        val cachedTranscript = getCachedTranscription(videoId)
         if (cachedTranscript != null) {
             log("transcribeVideo($videoId) found cached transcript")
             return@runBlocking cachedTranscript
