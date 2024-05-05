@@ -11,3 +11,13 @@ fun log(msg: String) {
 object YoutubeChannelFeeder {
     val logger = LoggerFactory.getLogger(this::class.java)
 }
+
+object Log {
+    fun debug(msg: String) = log(msg)
+
+    fun error(e: Throwable) {
+        log("Error: ${e.localizedMessage}")
+        // log the stack trace using Log.debug
+        e.stackTrace.forEach { log(it.toString()) }
+    }
+}

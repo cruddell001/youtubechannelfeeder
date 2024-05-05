@@ -83,6 +83,7 @@ fun generateBuildConfigFile() {
     val databaseUser = properties.getProperty("databaseUser")
     val databasePassword = properties.getProperty("databasePassword")
     val baseUrl = properties.getProperty("baseUrl")
+    val openAiKey = properties.getProperty("openAiKey")
     println("Generating BuildConfig file with youtubeApiKey: $youtubeKey")
     buildConfigFile.writeText(
         """
@@ -94,6 +95,7 @@ fun generateBuildConfigFile() {
                 const val DATABASE_USER: String = "$databaseUser"
                 const val DATABASE_PASSWORD: String = "$databasePassword"
                 const val BASE_URL: String = "$baseUrl"
+                const val OPENAI_API_KEY: String = "$openAiKey"
             }
             """.trimIndent()
     )

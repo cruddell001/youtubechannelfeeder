@@ -1,10 +1,7 @@
 package com.ruddell.plugins
 
 import com.ruddell.BuildConfig
-import com.ruddell.extensions.log
-import com.ruddell.extensions.sanitize
-import com.ruddell.extensions.toDate
-import com.ruddell.extensions.toRfc822
+import com.ruddell.extensions.*
 import com.ruddell.models.AnalyticEvent
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.repository.AnalyticsManager
@@ -76,7 +73,7 @@ fun Application.configureRouting() {
         }
         get("cache/transcription/{videoId}") {
             val videoId = call.parameters["videoId"] ?: ""
-            val transcript = DataRepository.getCachedTranscription(videoId)?.takeIf { it.texts.isNotEmpty() }
+            val transcript = DataRepository.getCachedTranscription(videoId)?.takeIf { it.texts.isNotEmpty() && it.hasSummary() }
             if (transcript == null) {
                 call.respond(HttpStatusCode.NoContent, "")
                 return@get

@@ -1,14 +1,8 @@
 package com.ruddell.repository
 
 
-import com.ruddell.extensions.log
-import com.ruddell.extensions.toDate
-import com.ruddell.extensions.toMySqlString
-import com.ruddell.extensions.toRfc822
-import com.ruddell.models.Transcript
-import com.ruddell.models.YoutubeChannel
-import com.ruddell.models.YoutubeChannelSearch
-import com.ruddell.models.YoutubeItem
+import com.ruddell.extensions.*
+import com.ruddell.models.*
 import com.ruddell.repository.database.AppDatabase
 import kotlinx.coroutines.runBlocking
 import java.util.*
@@ -69,11 +63,36 @@ object DataRepository {
             ?.copy(texts = AppDatabase.transcriptTextHelper.getByVideoId(videoId))
     }
 
+    suspend fun summarizeVideo(videoId: String): Transcript? {
+        val cachedTranscript = getCachedTranscription(videoId) ?: return null
+        if (cachedTranscript.hasSummary()) return cachedTranscript
+        try {
+            val summary = OpenAiHelper.requestSummary(cachedTranscript).takeIf { it.isNotEmpty() }?.let {
+                val summary = "Summary: <br/>\n<br/>\n$it<br/>\n"
+                TranscriptText(videoId, -1.0, 0.0, summary)
+            }
+            if (summary != null) {
+                Log.debug("Successfully summarized video $videoId")
+                val updatedTranscript = cachedTranscript.copy(texts = listOf(summary) + cachedTranscript.texts)
+                AppDatabase.transcriptTextHelper.delete(videoId)
+                updatedTranscript.texts.forEach {
+                    AppDatabase.transcriptTextHelper.insert(it)
+                }
+            } else {
+                Log.debug("Failed to summarize video $videoId")
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
+        return getCachedTranscription(videoId)
+    }
+
     fun transcribeVideo(videoId: String): Transcript? = runBlocking {
         val cachedTranscript = getCachedTranscription(videoId)
         if (cachedTranscript != null) {
             log("transcribeVideo($videoId) found cached transcript")
-            return@runBlocking cachedTranscript
+            return@runBlocking summarizeVideo(videoId)
         }
 
         log("transcribeVideo($videoId) fetching fresh transcript")
@@ -86,7 +105,7 @@ object DataRepository {
             }
         }
 
-        return@runBlocking freshTranscript
+        return@runBlocking summarizeVideo(videoId)
     }
 
     private fun YoutubeChannel?.isStale(): Boolean {

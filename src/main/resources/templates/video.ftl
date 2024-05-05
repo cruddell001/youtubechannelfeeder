@@ -52,11 +52,11 @@
                 console.log("found cached transcript: " + cachedData.title);
                 renderTranscript(cachedData);
             } else {
-                // If cached data is null, wait for 5 seconds and then fetch new transcript
+                // If cached data is null, wait for 3 seconds and then fetch new transcript
                 $('#spinner').show();
                 setTimeout(function() {
                     fetchNewTranscript(videoId);
-                }, 5000);
+                }, 3000);
             }
         });
 
@@ -79,8 +79,15 @@
 
             var transcriptHtml = '';
             data.texts.forEach(function(text) {
-                transcriptHtml += '<div class="transcript-text"><span class="timestamp">' +
-                    text.start.toFixed(2) + 's - </span><span>' + text.content + '</span></div>';
+                transcriptHtml += '<div class="transcript-text">';
+                if (text.start.toFixed(2) >= 0) {
+                    transcriptHtml += '<span class="timestamp">';
+                    transcriptHtml += text.start.toFixed(2);
+                    transcriptHtml += 's - </span><span>';
+                }
+
+                transcriptHtml += text.content;
+                transcriptHtml += '</span></div>';
             });
             $('#transcriptContainer').html(transcriptHtml);
         }

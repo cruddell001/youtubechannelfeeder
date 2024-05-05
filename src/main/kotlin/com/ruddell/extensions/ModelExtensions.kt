@@ -2,6 +2,7 @@ package com.ruddell.extensions
 
 import com.google.api.services.youtube.model.Channel
 import com.google.api.services.youtube.model.SearchResult
+import com.ruddell.models.Transcript
 import com.ruddell.models.YoutubeChannel
 import com.ruddell.models.YoutubeItem
 import com.ruddell.plugins.sanitizeForRss
@@ -37,3 +38,5 @@ fun YoutubeChannel.sanitize(): YoutubeChannel = this.copy(
     title = title?.sanitizeForRss() ?: channelTitle?.sanitizeForRss() ?: "",
     description = description?.sanitizeForRss() ?: ""
 )
+
+fun Transcript.hasSummary(): Boolean = this.texts.any { it.start < 0.0 }
